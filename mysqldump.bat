@@ -1,6 +1,11 @@
 @echo off
+setlocal DisableDelayedExpansion
 
-php .\MySQLDump.php
+if defined PHP_BINARY (
+    "%PHP_BINARY%" "%~dp0MySQLDump.php" %*
+) else (
+    php.exe "%~dp0MySQLDump.php" %*
+)
 
-:: pause
-:: <- comment
+set "scheduler_exit_code=%ERRORLEVEL%"
+endlocal & exit /b %scheduler_exit_code%

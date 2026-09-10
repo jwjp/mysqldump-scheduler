@@ -1,0 +1,30 @@
+; 이 파일을 settings.ini로 복사하세요.
+; 실행 파일명(PATH) 또는 절대 경로를 지정하며 옵션을 덧붙이지 않습니다.
+; 공백이 있는 경로도 따옴표로 감싸면 사용할 수 있습니다.
+mysql-binary = "mysql.exe"
+mysqldump-binary = "mysqldump.exe"
+; mysql-binary = "C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe"
+; mysqldump-binary = "C:\Program Files\MySQL\MySQL Server 8.4\bin\mysqldump.exe"
+
+; 기본값은 SQL 파일 백업만 수행합니다.
+; true로 바꾸면 허용 목록의 로컬 DB를 DROP DATABASE로 삭제 후 재생성합니다.
+; 복원 실패 시 부분 적용될 수 있으며 자동 롤백은 없습니다.
+restore-enabled = false
+localhost-host = "127.0.0.1"
+localhost-port = 3306
+; localhost-username = "backup_restore"
+; localhost-password = "replace-with-your-password"
+; restore-databases[] = "app"
+
+; 복원 시 모든 원격 DB가 위 허용 목록에 있어야 하고 DB명 중복은 금지됩니다.
+; localhost-host는 루프백만 허용하며 원격/로컬 server_uuid도 비교합니다.
+; ignore-table의 테이블도 기존 로컬 DB 삭제 시 함께 사라집니다.
+
+retention-days = 30
+process-timeout = 3600
+
+; Slack은 선택 사항입니다. 실제 URL을 지정하지 않으면 알림을 보내지 않습니다.
+; HTTPS hooks.slack.com/services/... 또는 hooks.slack-gov.com/services/...만 허용.
+; slack-url = "https://hooks.slack.com/services/REPLACE/THIS/WEBHOOK"
+slack-timeout = 10
+; slack-ca-bundle = "C:\Certificates\trusted-ca.pem"

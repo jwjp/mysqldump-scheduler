@@ -1,2 +1,8 @@
-.*
-!.gitignore
+database.ini
+settings.ini
+*.sql
+*.sql.partial
+sql_storage/
+logs/
+.mysqldump.lock
+.env*
