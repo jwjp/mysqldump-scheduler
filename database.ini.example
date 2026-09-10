@@ -1,7 +1,7 @@
-; 이 파일을 database.ini로 복사하고 값을 수정하세요.
-; 섹션 이름: ASCII 영문자/숫자로 시작, 나머지는 영문자/숫자/_/-, 64글자 이하.
-; DB/테이블 이름: ASCII 영문자, 숫자, _, $, - / 64글자 이하 / 첫 글자 - 금지.
-; 암호는 실제 값을 사용하세요. ^를 ^^로 바꾸는 셸 이스케이프는 하지 않습니다.
+; Copy this file to database.ini and update the values.
+; Section names: 1-64 ASCII letters/digits/_/-, starting with a letter or digit.
+; DB/table names: 1-64 ASCII letters/digits/_/$/-, starting with a letter, digit, or _.
+; Use the actual password. Do not apply shell escaping such as replacing ^ with ^^.
 
 [source01]
 host = "db-host.internal"
@@ -12,8 +12,8 @@ database[0] = "app"
 ; database[1] = "analytics"
 ; ignore-table[1] = "temporary_report,import_staging"
 
-; 원본 서버를 추가하려면 별도 섹션을 사용하세요.
-; 로컬 복원을 켜면 전체 섹션에서 DB명이 중복되면 안 됩니다.
+; Use a separate section for each additional source server.
+; Database names must be unique across all sections when local restore is enabled.
 ; [source02]
 ; host = "another-db-host.internal"
 ; port = 3306
