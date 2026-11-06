@@ -83,6 +83,20 @@ CNF;
             removeTree($directory);
         }
     },
+    'runner passes the encryption mode through the option file' => function (): void {
+        $runner = new FixtureProcessRunner();
+        $connection = ['ssl-mode' => 'REQUIRED'] + runnerConnection();
+        $result = $runner->run(['runner-fixture', 'inspect'], $connection, null, 10);
+        $data = json_decode($result['stdout'], true, 512, JSON_THROW_ON_ERROR);
+        $expected = "[client]
+host=\"127.0.0.1\"
+port=3307
+user=\"backup user\"
+password=\"fixture-secret\"
+ssl-mode=REQUIRED
+";
+        assertSameValue(hash('sha256', $expected), $data['optionsHash']);
+    },
     'runner consumes concurrent stdout and stderr without pipe deadlock' => function (): void {
         $runner = new FixtureProcessRunner();
         $result = $runner->run(['runner-fixture', 'pressure'], runnerConnection(), null, 10);

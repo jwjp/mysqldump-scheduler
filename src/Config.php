@@ -11,9 +11,10 @@ final class Config
     private const SETTINGS_KEYS = [
         'mysql-binary', 'mysqldump-binary', 'restore-enabled', 'localhost-host',
         'localhost-port', 'localhost-username', 'localhost-password', 'restore-databases',
-        'retention-days', 'process-timeout', 'slack-url', 'slack-timeout', 'slack-ca-bundle',
+        'retention-days', 'process-timeout', 'slack-url', 'slack-timeout', 'slack-ca-bundle', 'ssl-mode',
     ];
 
+    private const SSL_MODES = ['REQUIRED', 'PREFERRED', 'DISABLED'];
     private const DATABASE_KEYS = ['host', 'port', 'username', 'password', 'database', 'ignore-table'];
     private const SYSTEM_DATABASES = ['mysql', 'sys', 'information_schema', 'performance_schema'];
 
@@ -58,6 +59,9 @@ final class Config
                 'username' => self::string($fields, 'username', $context),
                 'password' => self::string($fields, 'password', $context, true),
             ];
+            if (!self::isLoopback($connection['host'])) {
+                $connection['ssl-mode'] = $settings['ssl-mode'];
+            }
             $databases = self::indexed($fields, 'database', $context, true);
             $ignore = array_key_exists('ignore-table', $fields)
                 ? self::indexed($fields, 'ignore-table', $context, false)
@@ -210,6 +214,11 @@ final class Config
             $caBundle = $resolved;
         }
 
+        $sslMode = strtoupper(self::string($input, 'ssl-mode', $context, false, 'REQUIRED'));
+        if (!in_array($sslMode, self::SSL_MODES, true)) {
+            throw new InvalidArgumentException('settings.ini: ssl-mode must be one of ' . implode(', ', self::SSL_MODES) . '.');
+        }
+
         $mysql = self::string($input, 'mysql-binary', $context, false, PHP_OS_FAMILY === 'Windows' ? 'mysql.exe' : 'mysql');
         $mysqldump = self::string($input, 'mysqldump-binary', $context, false, PHP_OS_FAMILY === 'Windows' ? 'mysqldump.exe' : 'mysqldump');
         return [
@@ -230,6 +239,7 @@ final class Config
             'slack-url' => $url,
             'slack-timeout' => self::integer($input, 'slack-timeout', 10, 1, 60, $context),
             'slack-ca-bundle' => $caBundle,
+            'ssl-mode' => $sslMode,
         ];
     }
 

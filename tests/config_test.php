@@ -230,6 +230,27 @@ INI;
             assertSameValue(4, count(Config::load($root)->jobs));
         });
     },
+    'source connections require encryption unless configured otherwise' => function () use ($withConfig, $database): void {
+        $withConfig('retention-days = 30', $database, function (string $root): void {
+            assertSameValue('REQUIRED', Config::load($root)->jobs[0]['connection']['ssl-mode']);
+        });
+        $withConfig('ssl-mode = preferred', $database, function (string $root): void {
+            assertSameValue('PREFERRED', Config::load($root)->jobs[0]['connection']['ssl-mode']);
+        });
+        $local = "[local]
+host = 127.0.0.1
+port = 3307
+username = backup
+password = \"secret\"
+database[0] = inventory
+";
+        $withConfig('retention-days = 30', $local, function (string $root): void {
+            assertTrue(!isset(Config::load($root)->jobs[0]['connection']['ssl-mode']), 'Loopback sources keep the client default.');
+        });
+        $withConfig('ssl-mode = off', $database, function (string $root): void {
+            assertThrows(static fn () => Config::load($root));
+        });
+    },
     'restore rejects MySQL system databases' => static function () use ($database, $restoreSettings, $withConfig): void {
         foreach (['mysql', 'sys', 'information_schema', 'performance_schema', 'MYSQL'] as $name) {
             $withConfig(str_replace('inventory', $name, $restoreSettings), str_replace('inventory', $name, $database), static function ($root): void {

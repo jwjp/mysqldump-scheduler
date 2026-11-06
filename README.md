@@ -88,6 +88,7 @@ See [settings.ini.example](settings.ini.example) for a complete example.
 | `restore-databases[]` | Explicit list of databases allowed for restoration; required when restoration is enabled |
 | `retention-days` | `30`; retention period for successful executions, in days |
 | `process-timeout` | `3600`; timeout for an external process, in seconds |
+| `ssl-mode` | `REQUIRED`; encryption for non-loopback sources: `REQUIRED`, `PREFERRED`, or `DISABLED`. `REQUIRED` does not verify the server certificate |
 | `slack-url` | Optional; Slack notifications are disabled when omitted |
 | `slack-timeout` | `10`; timeout for each Slack request, in seconds |
 | `slack-ca-bundle` | Optional path to a trusted CA certificate bundle |

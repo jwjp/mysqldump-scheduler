@@ -9,6 +9,7 @@ use RuntimeException;
 /** Runs MySQL clients without a shell or passwords in their command lines. */
 class ProcessRunner
 {
+    private const SSL_MODES = ['REQUIRED', 'PREFERRED', 'DISABLED'];
     private const OUTPUT_LIMIT = 65536;
 
     /** @return array{exitCode: int, stdout: string, stderr: string} */
@@ -35,7 +36,8 @@ class ProcessRunner
                 . 'host=' . $this->quoteOption($connection['host']) . "\n"
                 . 'port=' . $connection['port'] . "\n"
                 . 'user=' . $this->quoteOption($connection['username']) . "\n"
-                . 'password=' . $this->quoteOption($connection['password']) . "\n";
+                . 'password=' . $this->quoteOption($connection['password']) . "\n"
+                . (isset($connection['ssl-mode']) ? 'ssl-mode=' . $connection['ssl-mode'] . "\n" : '');
             $file = @fopen($credentials, 'x+b');
             if ($file === false) {
                 throw new RuntimeException('Unable to create the private client option file.');
@@ -79,6 +81,9 @@ class ProcessRunner
         }
         if (!isset($connection['port']) || !is_int($connection['port']) || $connection['port'] < 1 || $connection['port'] > 65535) {
             throw new RuntimeException('The client port must be between 1 and 65535.');
+        }
+        if (isset($connection['ssl-mode']) && !in_array($connection['ssl-mode'], self::SSL_MODES, true)) {
+            throw new RuntimeException('The client connection contains an invalid ssl-mode.');
         }
         if ($timeoutSeconds < 1) {
             throw new RuntimeException('The process timeout must be positive.');

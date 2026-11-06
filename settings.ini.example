@@ -23,6 +23,10 @@ localhost-port = 3306
 retention-days = 30
 process-timeout = 3600
 
+; Encryption for source servers: REQUIRED (default), PREFERRED, or DISABLED.
+; Loopback hosts are not affected. REQUIRED encrypts the connection but does not verify the server certificate.
+ssl-mode = "REQUIRED"
+
 ; Slack is optional. Notifications are disabled unless a webhook URL is configured.
 ; Only HTTPS hooks.slack.com/services/... or hooks.slack-gov.com/services/... URLs are allowed.
 ; slack-url = "https://hooks.slack.com/services/REPLACE/THIS/WEBHOOK"
